@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+    gcloud-pubsub:
+        image: gcr.io/google.com/cloudsdktool/google-cloud-cli
+        # use "--host-port=0.0.0.0:8085" instead of the default "localhost:8085" to allow connecting from outside
+        command: gcloud beta emulators pubsub start --project=local-project --host-port=0.0.0.0:8085
+        ports:
+            - "8085:8085"
