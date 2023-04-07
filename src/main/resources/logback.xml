@@ -7,11 +7,14 @@
 
 	<appender name="STDOUT" class="ConsoleAppender">
 		<encoder class="PatternLayoutEncoder">
-			<pattern>%d{HH:mm:ss.SSS} [%-5level] %thread %logger{36} -%kvp- %msg%n</pattern>
+			<pattern>%d{HH:mm:ss.SSS} [%-5level] - [%-36logger{36}] - [%-30thread] -%kvp- %msg%n</pattern>
 		</encoder>
 	</appender>
 
 	<root level="info">
 		<appender-ref ref="STDOUT"/>
 	</root>
+	<logger name="com.kyrex" level="trace" additivity="false">
+		<appender-ref ref="STDOUT"/>
+	</logger>
 </configuration>

@@ -21,25 +21,21 @@ public class MainVerticle extends AbstractVerticle {
 	public Completable rxStart() {
 		Router router = Router.router(vertx);
 
-		router.get("/projects/:projectId/topics").handler(context -> {
-			String project = context.pathParam("projectId");
+		router.get("/topics").handler(context -> {
+			LOG.trace("GET {}", context.request().path());
 
-			LOG.info("GET {} - Params: {}", context.request().path(), context.pathParams());
-
-			pubSubService.getTopics(project)
+			pubSubService.getTopics()
 				.subscribe(topics -> context.response()
 						.end(String.join("\n", topics.stream().map(Topic::getName).toList())),
 					err -> context.response().end("Error: " + err.getMessage()));
 		});
 
-		router.post("/projects/:projectId/topics/:topicId").handler(context -> {
-			String project = context.pathParam("projectId");
-			String topic = context.pathParam("topicId");
+		router.post("/topics/:topicId").handler(context -> {
+			LOG.trace("POST {} - params: {}", context.request().path(), context.pathParams());
+			String topicId = context.pathParam("topicId");
 
-			LOG.info("POST {} - Params: {}", context.request().path(), context.pathParams());
-
-			pubSubService.createTopic(project, topic)
-				.subscribe(() -> context.response().end("Topic '" + topic + "' created in project " + project),
+			pubSubService.createTopic(topicId)
+				.subscribe(() -> context.response().end("Topic '" + topicId + "' created: OK"),
 					err -> context.response().end("Error: " + err.getMessage()));
 		});
 

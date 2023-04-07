@@ -24,19 +24,21 @@ public class PubSubService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PubSubService.class);
 
+	private final String projectId;
 	private final TransportChannelProvider transportChannelProvider;
 	private final CredentialsProvider credentialsProvider;
 
-	public PubSubService(String host) {
-		LOG.debug("Creating PubSubService with host={}", host);
+	public PubSubService(String host, String projectId) {
+		LOG.debug("Creating PubSubService with: {host={}, projectId={}}", host, projectId);
 
 		ManagedChannel managedChannel = ManagedChannelBuilder.forTarget(host).usePlaintext().build();
 		this.transportChannelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(managedChannel));
 		this.credentialsProvider = NoCredentialsProvider.create();
+		this.projectId = projectId;
 	}
 
-	public Single<List<Topic>> getTopics(String projectId) {
-		LOG.debug("Getting topics with: {projectId={}}", projectId);
+	public Single<List<Topic>> getTopics() {
+		LOG.debug("Getting topics from project '{}'...", projectId);
 
 		return Single.defer(() -> {
 			try (TopicAdminClient topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder()
@@ -48,7 +50,7 @@ public class PubSubService {
 					.stream(topicAdminClient.listTopics(ProjectName.of(projectId)).iterateAll().spliterator(), false)
 					.toList();
 
-				LOG.info("Topics obtained for project {}: {}", projectId, topics.size());
+				LOG.debug("Topics obtained from project '{}': {}", projectId, topics.size());
 				return Single.just(topics);
 			} catch (Exception e) {
 				LOG.error("Error getting topics for project {}: {}", projectId, e.getMessage());
@@ -57,8 +59,8 @@ public class PubSubService {
 		});
 	}
 
-	public Completable createTopic(String projectId, String topicId) {
-		LOG.debug("Creating topic with: {projectId={}, topicId={}}...", projectId, topicId);
+	public Completable createTopic(String topicId) {
+		LOG.debug("Creating topic in project '{}' -> topicId={}", projectId, topicId);
 
 		return Completable.defer(() -> {
 			try (TopicAdminClient topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder()
