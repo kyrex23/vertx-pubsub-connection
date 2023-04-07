@@ -1,15 +1,14 @@
 package com.kyrex;
 
 import io.vertx.rxjava3.core.Vertx;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Properties;
 
+@Slf4j
 public class Main {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 	private static final String DEFAULT_PUBSUB_EMULATOR_HOST = "localhost:8085";
 	private static final String DEFAULT_PUBSUB_PROJECT_ID = "local-project";
 
@@ -24,9 +23,8 @@ public class Main {
 		PubSubService pubSubService = new PubSubService(host, project);
 
 		vertx.rxDeployVerticle(new MainVerticle(pubSubService))
-			.doOnSuccess(id -> LOG.info("Server up with id: {}", id))
-			.doOnError(err -> LOG.error("Server failed: {}", err.getMessage(), err))
-			.subscribe();
+			.subscribe(id -> log.info("Server up with id: {}", id),
+				err -> log.error("Server failed: {}", err.getMessage()));
 	}
 
 }

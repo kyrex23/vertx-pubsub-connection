@@ -4,12 +4,10 @@ import com.google.pubsub.v1.Topic;
 import io.reactivex.rxjava3.core.Completable;
 import io.vertx.rxjava3.core.AbstractVerticle;
 import io.vertx.rxjava3.ext.web.Router;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MainVerticle extends AbstractVerticle {
-
-	private static final Logger LOG = LoggerFactory.getLogger(MainVerticle.class);
 
 	private final PubSubService pubSubService;
 
@@ -22,7 +20,7 @@ public class MainVerticle extends AbstractVerticle {
 		Router router = Router.router(vertx);
 
 		router.get("/topics").handler(context -> {
-			LOG.trace("GET {}", context.request().path());
+			log.trace("GET {}", context.request().path());
 
 			pubSubService.getTopics()
 				.subscribe(topics -> context.response()
@@ -31,7 +29,7 @@ public class MainVerticle extends AbstractVerticle {
 		});
 
 		router.post("/topics/:topicId").handler(context -> {
-			LOG.trace("POST {} - params: {}", context.request().path(), context.pathParams());
+			log.trace("POST {} - params: {}", context.request().path(), context.pathParams());
 			String topicId = context.pathParam("topicId");
 
 			pubSubService.createTopic(topicId)
