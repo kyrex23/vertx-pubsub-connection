@@ -1,4 +1,4 @@
-package com.kyrex;
+package com.kyrex.services;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;

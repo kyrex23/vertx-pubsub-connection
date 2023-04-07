@@ -1,5 +1,6 @@
 package com.kyrex;
 
+import com.kyrex.services.PubSubService;
 import io.vertx.rxjava3.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 
