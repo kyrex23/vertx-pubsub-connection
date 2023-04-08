@@ -25,30 +25,29 @@ public class MainVerticle extends AbstractVerticle {
 
 		// Topic Management
 		// ----------------
-		var topicsRetrieverService = new TopicsRetrieverService(pubSubAdapter, projectId);
-		var topicsRetrieverHandler = new TopicsRetrieverHandler(topicsRetrieverService);
+		var topicService = new TopicService(pubSubAdapter, projectId);
+
+		var topicsRetrieverHandler = new TopicsRetrieverHandler(topicService);
 		router.get("/topics").handler(topicsRetrieverHandler);
 
-		var topicCreatorService = new TopicCreatorService(pubSubAdapter, projectId);
-		var topicCreatorHandler = new TopicCreatorHandler(topicCreatorService);
+		var topicCreatorHandler = new TopicCreatorHandler(topicService);
 		router.post("/topics/:topicId").handler(topicCreatorHandler);
 
-		var topicDeleteService = new TopicDeleteService(pubSubAdapter, projectId);
-		var topicDeleteHandler = new TopicDeleteHandler(topicDeleteService);
+		var topicDeleteHandler = new TopicDeleteHandler(topicService);
 		router.delete("/topics/:topicId").handler(topicDeleteHandler);
 
 		// Subscription Management
 		// -----------------------
 		var subscriptionService = new SubscriptionService(pubSubAdapter, projectId);
 
-		var createSubscriptionHandler = new CreateSubscriptionHandler(subscriptionService);
-		router.post("/topics/:topicId/subscriptions/:subscriptionId").handler(createSubscriptionHandler);
-
 		var subscriptionListHandler = new SubscriptionListHandler(subscriptionService);
 		router.get("/subscriptions").handler(subscriptionListHandler);
 
 		var topicSubscriptionListHandler = new TopicSubscriptionListHandler(subscriptionService);
 		router.get("/topics/:topicId/subscriptions").handler(topicSubscriptionListHandler);
+
+		var createSubscriptionHandler = new CreateSubscriptionHandler(subscriptionService);
+		router.post("/topics/:topicId/subscriptions/:subscriptionId").handler(createSubscriptionHandler);
 
 		var deleteSubscriptionHandler = new DeleteSubscriptionHandler(subscriptionService);
 		router.delete("/subscriptions/:subscriptionId").handler(deleteSubscriptionHandler);

@@ -1,7 +1,5 @@
 package com.kyrex.pubsub.services;
 
-import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
-import com.google.cloud.pubsub.v1.TopicAdminClient;
 import com.google.pubsub.v1.*;
 import com.kyrex.pubsub.adapters.PubSubAdapter;
 import io.reactivex.rxjava3.core.Completable;
@@ -20,29 +18,28 @@ public class SubscriptionService {
 	private final PubSubAdapter pubSubAdapter;
 	private final String projectId;
 
-
 	public Single<Subscription> create(String topicId, String subscriptionId) {
-		log.trace("Creating a new subscription in topic '{}' -> subscriptionId={}", topicId, subscriptionId);
+		TopicName topicName = TopicName.of(projectId, topicId);
+		SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+		log.debug("Creating subscription '{}' for the topic '{}'", subscriptionName, topicName);
 
 		return Single.defer(() -> {
-			try(var subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
-				TopicName topicName = TopicName.of(projectId, topicId);
-				SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+			try (var subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
 				Subscription subscription = subscriptionAdminClient
-					.createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 10);
+					.createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 30);
 				return Single.just(subscription);
 			}
 		});
 	}
 
 	public Single<List<String>> get(String topicId) {
-		log.trace("Getting subscriptions from project '{}' and topic '{}'", projectId, topicId);
+		TopicName topicName = TopicName.of(projectId, topicId);
+		log.debug("Getting subscriptions from topic '{}'", topicName);
 
 		return Single.defer(() -> {
-			try (TopicAdminClient topicAdminClient = pubSubAdapter.createTopicAdminClient()) {
-				TopicName topic = TopicName.of(projectId, topicId);
+			try (var topicAdminClient = pubSubAdapter.createTopicAdminClient()) {
 				List<String> subscriptions = StreamSupport
-					.stream(topicAdminClient.listTopicSubscriptions(topic).iterateAll().spliterator(), false)
+					.stream(topicAdminClient.listTopicSubscriptions(topicName).iterateAll().spliterator(), false)
 					.toList();
 				return Single.just(subscriptions);
 			}
@@ -50,11 +47,11 @@ public class SubscriptionService {
 	}
 
 	public Single<List<Subscription>> getAll() {
-		log.trace("Getting subscriptions from project '{}'", projectId);
+		ProjectName projectName = ProjectName.of(projectId);
+		log.debug("Getting subscriptions from project '{}'", projectName);
 
 		return Single.defer(() -> {
-			try (SubscriptionAdminClient subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
-				ProjectName projectName = ProjectName.of(projectId);
+			try (var subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
 				List<Subscription> subscriptions = StreamSupport
 					.stream(subscriptionAdminClient.listSubscriptions(projectName).iterateAll().spliterator(), false)
 					.toList();
@@ -64,12 +61,12 @@ public class SubscriptionService {
 	}
 
 	public Completable delete(String subscriptionId) {
-		log.trace("Deleting subscription from project '{}' -> subscriptionId={}", projectId, subscriptionId);
+		SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+		log.debug("Deleting subscription '{}'", subscriptionName);
 
 		return Completable.defer(() -> {
-			try(SubscriptionAdminClient subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
-				SubscriptionName subscription = SubscriptionName.of(projectId, subscriptionId);
-				subscriptionAdminClient.deleteSubscription(subscription);
+			try (var subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
+				subscriptionAdminClient.deleteSubscription(subscriptionName);
 				return Completable.complete();
 			}
 		});
