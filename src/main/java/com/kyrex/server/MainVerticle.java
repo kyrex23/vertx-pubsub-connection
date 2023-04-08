@@ -1,7 +1,9 @@
 package com.kyrex.server;
 
 import com.kyrex.pubsub.adapters.PubSubAdapter;
+import com.kyrex.pubsub.services.TopicDeleteService;
 import com.kyrex.server.handlers.TopicCreatorHandler;
+import com.kyrex.server.handlers.TopicDeleteHandler;
 import com.kyrex.server.handlers.TopicsRetrieverHandler;
 import com.kyrex.pubsub.services.TopicCreatorService;
 import com.kyrex.pubsub.services.TopicsRetrieverService;
@@ -30,6 +32,10 @@ public class MainVerticle extends AbstractVerticle {
 		TopicCreatorService topicCreatorService = new TopicCreatorService(pubSubAdapter, projectId);
 		TopicCreatorHandler topicCreatorHandler = new TopicCreatorHandler(topicCreatorService);
 		router.post("/topics/:topicId").handler(topicCreatorHandler);
+
+		TopicDeleteService topicDeleteService = new TopicDeleteService(pubSubAdapter, projectId);
+		TopicDeleteHandler topicDeleteHandler = new TopicDeleteHandler(topicDeleteService);
+		router.delete("/topics/:topicId").handler(topicDeleteHandler);
 
 		return vertx.createHttpServer()
 			.requestHandler(router)

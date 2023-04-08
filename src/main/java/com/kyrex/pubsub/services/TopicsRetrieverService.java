@@ -21,7 +21,7 @@ public class TopicsRetrieverService {
 
 
 	public Single<List<Topic>> getAll() {
-		log.debug("Getting topics from project '{}'...", projectId);
+		log.trace("Getting topics from project '{}'...", projectId);
 
 		return Single.defer(() -> {
 			try (TopicAdminClient topicAdminClient = pubSubAdapter.createTopicAdminClient()) {

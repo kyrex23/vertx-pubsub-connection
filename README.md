@@ -33,3 +33,4 @@ After that, your server will be listening on `localhost:8080`
 
 * `GET /topics` -- Retrieves the current topics
 * `POST /topics/{topicId}` -- Creates a new topic with the given `topicId` name
+* `DELETE /topics/{topicId}` -- Deletes the topic with the given `topicId` if exists
