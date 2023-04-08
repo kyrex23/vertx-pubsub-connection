@@ -9,17 +9,18 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class TopicSubscriptionListHandler implements Handler<RoutingContext> {
+public class CreateSubscriptionHandler implements Handler<RoutingContext> {
 
 	private final SubscriptionService subscriptionService;
 
 	@Override
 	public void handle(RoutingContext routingContext) {
-		log.trace("Method={} - Path={}", routingContext.request().method(), routingContext.request().path());
-
 		String topicId = routingContext.pathParam("topicId");
-		subscriptionService.get(topicId)
-			.subscribe(subscriptions -> routingContext.response().end(String.join("\n", subscriptions)),
+		String subscriptionId = routingContext.pathParam("subscriptionId");
+
+		subscriptionService.create(topicId, subscriptionId)
+			.subscribe(subscription -> routingContext.response()
+					.end("Subscription '" + subscription.getName() + "' created OK"),
 				routingContext::fail);
 	}
 
