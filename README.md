@@ -31,6 +31,19 @@ After that, your server will be listening on `localhost:8080`
 
 ## API Endpoints
 
-* `GET /topics` -- Retrieves the current topics
-* `POST /topics/{topicId}` -- Creates a new topic with the given `topicId` name
-* `DELETE /topics/{topicId}` -- Deletes the topic with the given `topicId` if exists
+<details>
+	<summary>Topic Management</summary>
+	<ul>
+		<li><code>GET /topics</code> -- Retrieves the current topics</li>
+		<li><code>POST /topics/{topicId}</code> -- Creates a new topic with the given `topicId` name</li>
+		<li><code>DELETE /topics/{topicId}</code> -- Deletes the topic with the given `topicId` if exists</li>
+	</ul>
+</details>
+
+<details>
+	<summary>Subscription Management</summary>
+	<ul>
+		<li><code>GET /subscriptions</code> -- Retrieves all the subscriptions for the current project</li>
+		<li><code>GET /topics/{topicId}/subscriptions</code> -- Retrieves the subscriptions for a specific topic</li>
+	</ul>
+</details>
