@@ -44,6 +44,8 @@ After that, your server will be listening on `localhost:8080`
 	<summary>Subscription Management</summary>
 	<ul>
 		<li><code>GET /subscriptions</code> -- Retrieves all the subscriptions for the current project</li>
-		<li><code>GET /topics/{topicId}/subscriptions</code> -- Retrieves the subscriptions for a specific topic</li>
+		<li><code>GET /topics/{topicId}/subscriptions</code> -- Retrieves the subscriptions for the given topic</li>
+		<li><code>POST /topics/{topicId}/subscriptions/{subscriptionId}</code> -- Creates a subscription for the given topic</li>
+		<li><code>DELETE /subscriptions/{subscriptionId}</code> -- Deletes the subscription with the given id</li>
 	</ul>
 </details>
