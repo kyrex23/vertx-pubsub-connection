@@ -1,6 +1,6 @@
 package com.kyrex;
 
-import com.kyrex.services.PubSubService;
+import com.kyrex.server.MainVerticle;
 import io.vertx.rxjava3.core.Vertx;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,10 +20,9 @@ public class Main {
 		properties.load(Main.class.getResourceAsStream("/config.properties"));
 
 		String host = properties.getProperty("PUBSUB_EMULATOR_HOST", DEFAULT_PUBSUB_EMULATOR_HOST);
-		String project = properties.getProperty("PUBSUB_PROJECT_ID", DEFAULT_PUBSUB_PROJECT_ID);
-		PubSubService pubSubService = new PubSubService(host, project);
+		String projectId = properties.getProperty("PUBSUB_PROJECT_ID", DEFAULT_PUBSUB_PROJECT_ID);
 
-		vertx.rxDeployVerticle(new MainVerticle(pubSubService))
+		vertx.rxDeployVerticle(new MainVerticle(host, projectId))
 			.subscribe(id -> log.info("Server up with id: {}", id),
 				err -> log.error("Server failed: {}", err.getMessage()));
 	}
