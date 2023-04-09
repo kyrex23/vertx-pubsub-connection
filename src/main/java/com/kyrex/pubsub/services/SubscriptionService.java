@@ -32,6 +32,20 @@ public class SubscriptionService {
 		});
 	}
 
+	public Single<Subscription> create(String topicId, String subscriptionId, String endpoint) {
+		TopicName topicName = TopicName.of(projectId, topicId);
+		SubscriptionName subscriptionName = SubscriptionName.of(projectId, subscriptionId);
+		log.debug("Creating subscription '{}' for the topic '{}'", subscriptionName, topicName);
+
+		return Single.defer(() -> {
+			try (var subscriptionAdminClient = pubSubAdapter.createSubscriptionAdminClient()) {
+				Subscription subscription = subscriptionAdminClient.createSubscription(subscriptionName, topicName,
+					PushConfig.newBuilder().setPushEndpoint(endpoint).build(), 30);
+				return Single.just(subscription);
+			}
+		});
+	}
+
 	public Single<List<String>> get(String topicId) {
 		TopicName topicName = TopicName.of(projectId, topicId);
 		log.debug("Getting subscriptions from topic '{}'", topicName);

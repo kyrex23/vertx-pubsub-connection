@@ -1,11 +1,13 @@
 package com.kyrex.server;
 
 import com.kyrex.pubsub.adapters.PubSubAdapter;
-import com.kyrex.pubsub.services.*;
+import com.kyrex.pubsub.services.SubscriptionService;
+import com.kyrex.pubsub.services.TopicService;
 import com.kyrex.server.handlers.*;
 import io.reactivex.rxjava3.core.Completable;
 import io.vertx.rxjava3.core.AbstractVerticle;
 import io.vertx.rxjava3.ext.web.Router;
+import io.vertx.rxjava3.ext.web.handler.BodyHandler;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,7 @@ public class MainVerticle extends AbstractVerticle {
 	@Override
 	public Completable rxStart() {
 		Router router = Router.router(vertx);
+		router.route().handler(BodyHandler.create());
 
 		var pubSubAdapter = new PubSubAdapter(host);
 

@@ -8,8 +8,7 @@ Demo API created using Vert.x to interact with a locally-emulated Google Pub/Sub
 
 To get started, you will need to deploy the locally-emulated Google Pub/Sub service.
 
-You can do this using this [docker-compose](./docker/docker-compose.yml) by running the following command from the
-project root:
+You can do this using this [docker-compose](./docker/docker-compose.yml) by running the following command from the project root:
 
 ```
 docker-compose -f docker/docker-compose.yml up -d
@@ -45,7 +44,10 @@ After that, your server will be listening on `localhost:8080`
 	<ul>
 		<li><code>GET /subscriptions</code> -- Retrieves all the subscriptions for the current project</li>
 		<li><code>GET /topics/{topicId}/subscriptions</code> -- Retrieves the subscriptions for the given topic</li>
-		<li><code>POST /topics/{topicId}/subscriptions/{subscriptionId}</code> -- Creates a subscription for the given topic</li>
+		<li>
+			<code>POST /topics/{topicId}/subscriptions/{subscriptionId}</code> -- Creates a pull-subscription for the given topic<br>
+			You can send a body like <code>{"push_endpoint": "..."}</code> to create a push-subscription instead
+		</li>
 		<li><code>DELETE /subscriptions/{subscriptionId}</code> -- Deletes the subscription with the given id</li>
 	</ul>
 </details>

@@ -18,6 +18,7 @@ public class TopicCreatorHandler implements Handler<RoutingContext> {
 		log.trace("Method={} - Path={}", routingContext.request().method(), routingContext.request().path());
 
 		var topicId = routingContext.pathParam("topicId");
+
 		topicService.create(topicId)
 			.subscribe(topic -> routingContext.response().end(topic.getName()),
 				routingContext::fail);
