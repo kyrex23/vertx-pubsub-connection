@@ -27,6 +27,7 @@ mvn exec:java -Dexec.mainClass="com.kyrex.Main"
 
 After that, your server will be listening on `localhost:8080`
 
+:star: The folder `postman` contains a Postman collection with all the available endpoints, ready for use.
 
 ## API Endpoints
 
