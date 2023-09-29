@@ -7,3 +7,14 @@ services:
         command: gcloud beta emulators pubsub start --project=local-project --host-port=0.0.0.0:8085
         ports:
             - "8085:8085"
+    json-server:
+        image: clue/json-server
+        # the content of `command` will be appended to `json-server -p 80 db.json`
+        command: --watch
+        volumes:
+            - ./data/db.json:/data/db.json
+        ports:
+            - "3000:80"
+networks:
+    default:
+        driver: bridge

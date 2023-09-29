@@ -51,3 +51,14 @@ After that, your server will be listening on `localhost:8080`
 		<li><code>DELETE /subscriptions/{subscriptionId}</code> -- Deletes the subscription with the given id</li>
 	</ul>
 </details>
+
+<details>
+	<summary>Message Management</summary>
+	<ul>
+		<li><code>GET /subscriptions/{subscriptionId}/messages</code> -- Retrieves the messages published into the given pull-subscription</li>
+		<li>
+			<code>POST /topics/{topicId}/messages</code> -- Publishes a new message to the given topic <br>
+			The content of the message should be using the following request body <code>{"message": "..."}</code>
+		</li>
+	</ul>
+</details>

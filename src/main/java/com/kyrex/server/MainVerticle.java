@@ -1,6 +1,7 @@
 package com.kyrex.server;
 
 import com.kyrex.pubsub.adapters.PubSubAdapter;
+import com.kyrex.pubsub.services.MessageService;
 import com.kyrex.pubsub.services.SubscriptionService;
 import com.kyrex.pubsub.services.TopicService;
 import com.kyrex.server.handlers.*;
@@ -54,6 +55,16 @@ public class MainVerticle extends AbstractVerticle {
 
 		var deleteSubscriptionHandler = new DeleteSubscriptionHandler(subscriptionService);
 		router.delete("/subscriptions/:subscriptionId").handler(deleteSubscriptionHandler);
+
+		// Message Management
+		// ------------------
+		var messageService = new MessageService(pubSubAdapter, projectId);
+
+		var receiverHandler = new ReceiverHandler(messageService);
+		router.get("/subscriptions/:subscriptionId/messages").handler(receiverHandler);
+
+		var publisherHandler = new PublisherHandler(messageService);
+		router.post("/topics/:topicId/messages").handler(publisherHandler);
 
 		return vertx.createHttpServer()
 			.requestHandler(router)
